@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider as StoreProvider } from "react-redux";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Route, RouterProvider } from "react-router-dom";
 import { store } from "./app/redux/store";
 import HomePage from "./pages/home.page";
 import LoginPage from "./pages/login.page";
@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "ui/styles.css";
 import "./index.css";
+import RequireUser from "./features/auth/lib/requireAuth";
 
 const router = createBrowserRouter([
   {
@@ -33,7 +34,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <DashboardPage />,
+    element: <RequireUser allowedRoles={["user", "admin"]} />,
+    children: [
+      {
+        element: <DashboardPage />,
+      },
+    ],
   },
 ]);
 

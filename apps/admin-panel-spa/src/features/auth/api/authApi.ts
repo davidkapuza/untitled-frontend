@@ -1,17 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { batch } from "react-redux";
 import { setUser } from "../../../entities/User/model/userSlice";
 import { GenericResponse, LoginResponse } from "../../../tmptypes";
+
 import {
   LoginFormSchemaType,
   RegistrationFormSchemaType,
 } from "../lib/validations";
+import { setToken } from "../model/authSlice";
 
 const BASE_URL = process.env.REACT_APP_SERVER_ENDPOINT;
 
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${BASE_URL}/api/users/`,
+    baseUrl: `${BASE_URL}/api/auth/`,
   }),
   endpoints: (builder) => ({
     registerUser: builder.mutation<
@@ -41,8 +44,10 @@ export const authApi = createApi({
           const {
             data: { accessToken, user },
           } = await queryFulfilled;
-
-          dispatch(setUser({ accessToken, ...user }));
+          batch(() => {
+            dispatch(setToken(accessToken));
+            dispatch(setUser(user));
+          });
         } catch (error) {}
       },
     }),

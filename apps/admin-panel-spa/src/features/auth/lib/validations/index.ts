@@ -20,13 +20,16 @@ export const RegistrationFormSchema = z
       .email("Email Address is invalid"),
     password: z
       .string()
-      .min(8, "Password must be at least 8 characters")
-      .max(32, "Password must be less than 32 characters")
+      .min(1, "Field is required")
+      .min(8, "Too short")
+      .max(32, "Too long")
       .regex(
-        /\d|[A-Z]/gm,
-        "Password has to contain at least one Uppercase and numeric characters"
-      ),
-    confirmPassword: z.string(),
+        /^\S(.+)\S$/gm,
+        "Password must not contain Whitespaces in the end or beginning of the password"
+      )
+      .regex(/\d/gm, "Password must contain at least one Digit.")
+      .regex(/[A-Z]/gm, "Password must have at least one Uppercase Character."),
+    confirmPassword: z.string().min(1, "Field is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",

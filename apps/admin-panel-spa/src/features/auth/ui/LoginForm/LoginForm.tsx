@@ -18,7 +18,7 @@ export function LoginForm() {
 
   const from =
     ((location.state as any)?.from.pathname as string) || "/dashboard";
-  
+
   useEffect(() => {
     if (isSuccess) {
       toast.success("You successfully logged in");
@@ -52,16 +52,13 @@ export function LoginForm() {
       defaultValues={someDefaultValues}
     >
       <Form.Input<LoginFormSchemaType>
-        displayName="Email"
         placeholder="Email"
         name="email"
         type="email"
       />
-      <Form.Input<LoginFormSchemaType>
-        displayName="Password"
+      <Form.PasswordInput<LoginFormSchemaType>
         placeholder="Password"
         name="password"
-        type="password"
       />
 
       <button type="submit">Login</button>

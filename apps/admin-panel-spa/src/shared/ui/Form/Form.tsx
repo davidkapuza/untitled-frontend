@@ -1,8 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { Input as StyledInput } from "ui";
+import { Icons } from "../Icons/Icons";
 
 type GenericOnSubmit = (
   data: Record<string, any>,
@@ -44,13 +45,13 @@ export function Form<
 
 type FormInputType<T> = {
   name: keyof T;
-  displayName: string;
-  type: string;
+  label?: string;
+  type?: string;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
 Form.Input = function Input<Model extends Record<string, any>>({
   name,
-  displayName,
+  label,
   type,
   ...props
 }: FormInputType<Model>) {
@@ -60,20 +61,62 @@ Form.Input = function Input<Model extends Record<string, any>>({
   } = useFormContext();
 
   return (
-    <div>
-      <label>
-        <span>{displayName}</span>
+    <>
+      <StyledInput
+        type={type}
+        name={name}
+        label={label}
+        register={register}
+        disabled={isSubmitting}
+        {...props}
+      />
+      {errors[name as string] && (
+        <span className="text-sm font-medium text-red-500 pt-2">
+          <Icons.AlertTriangle size={11} className="inline-block mr-1" />
+          <small>{errors[name as string]?.message}</small>
+        </span>
+      )}
+    </>
+  );
+};
+
+Form.PasswordInput = function PasswordInput<Model extends Record<string, any>>({
+  name,
+  label,
+  ...props
+}: FormInputType<Model>) {
+  const {
+    register,
+    formState: { isSubmitting, errors },
+  } = useFormContext();
+
+  const [visible, toggleVisible] = useState(false);
+
+  return (
+    <>
+      <div className="relative">
+        <button
+          className="absolute right-3 top-1/2 -translate-y-1/2"
+          onClick={() => toggleVisible(!visible)}
+        >
+          {visible ? <Icons.EyeOff size={14} /> : <Icons.Eye size={14} />}
+        </button>
         <StyledInput
-          type={type}
+          {...props}
           name={name}
+          label={label}
           register={register}
           disabled={isSubmitting}
-          {...props}
+          type={visible ? "text" : "password"}
         />
-      </label>
+      </div>
+
       {errors[name as string] && (
-        <p className="error">{errors[name as string]?.message}</p>
+        <span className="text-sm font-medium text-red-500 pt-2">
+          <Icons.AlertTriangle size={11} className="inline-block mr-1" />
+          <small>{errors[name as string]?.message}</small>
+        </span>
       )}
-    </div>
+    </>
   );
 };

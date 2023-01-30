@@ -6,13 +6,12 @@ export type User = {
   roles: string[];
   createdAt: Date;
   isActivated: boolean;
-  accessToken: string;
 };
 
 export type LoginResponse = {
   refreshToken: string;
   accessToken: string;
-  user: Omit<User, "accessToken">;
+  user: User;
 };
 
 export type GenericResponse = {
@@ -20,10 +19,12 @@ export type GenericResponse = {
   message: string;
 };
 
-export type ErrorResponse = {
-  status: number;
-  data: {
-    error: string;
-    message: string;
-  };
-} & Error;
+export type ErrorResponse =
+  | Array<{
+      error: string;
+      message: string;
+    }>
+  | ({
+      error: string;
+      message: string;
+    });

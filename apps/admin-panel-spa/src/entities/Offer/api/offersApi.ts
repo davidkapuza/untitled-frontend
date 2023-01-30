@@ -1,4 +1,3 @@
-// Or from '@reduxjs/toolkit/query' if not using the auto-generated hooks
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 type Offer = {
@@ -23,18 +22,14 @@ export const offersApi = createApi({
   endpoints: (build) => ({
     getOffers: build.query<OffersResponse, void>({
       query: () => "offers",
-      // Provides a list of `Posts` by `id`.
-      // If any mutation is executed that `invalidate`s any of these tags, this query will re-run to be always up-to-date.
-      // The `LIST` id is a "virtual id" we just made up to be able to invalidate this query specifically if a new `Posts` element was added.
       providesTags: (result) =>
-        // is result available?
         result
-          ? // successful query
+          ? 
             [
               ...result.map(({ id }) => ({ type: "Offers", id } as const)),
               { type: "Offers", id: "LIST" },
             ]
-          : // an error occurred, but we still want to refetch this query when `{ type: 'Posts', id: 'LIST' }` is invalidated
+          : 
             [{ type: "Offers", id: "LIST" }],
     }),
     addOffer: build.mutation<Offer, Partial<Offer>>({
@@ -45,8 +40,6 @@ export const offersApi = createApi({
           body,
         };
       },
-      // Invalidates all Post-type queries providing the `LIST` id - after all, depending of the sort order,
-      // that newly created post could show up in any lists.
       invalidatesTags: [{ type: "Offers", id: "LIST" }],
     }),
     getOfferById: build.query<Offer, number>({
@@ -62,8 +55,6 @@ export const offersApi = createApi({
           body,
         };
       },
-      // Invalidates all queries that subscribe to this Post `id` only.
-      // In this case, `getPost` will be re-run. `getPosts` *might*  rerun, if this id was under its results.
       invalidatesTags: (result, error, { id }) => [{ type: "Offers", id }],
     }),
     deleteOffer: build.mutation<{ success: boolean; id: number }, number>({
@@ -73,7 +64,6 @@ export const offersApi = createApi({
           method: "DELETE",
         };
       },
-      // Invalidates all queries that subscribe to this Post `id` only.
       invalidatesTags: (result, error, id) => [{ type: "Offers", id }],
     }),
   }),

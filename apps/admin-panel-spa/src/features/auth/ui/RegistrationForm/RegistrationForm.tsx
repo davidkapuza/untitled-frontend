@@ -7,7 +7,6 @@ import {
   RegistrationFormSchemaType,
 } from "../../lib/validations";
 import { toast } from "react-toastify";
-import { ErrorResponse } from "../../../../tmptypes";
 
 export function RegistrationForm() {
   const [registerUser, { isLoading, isError, error, isSuccess }] =
@@ -27,17 +26,18 @@ export function RegistrationForm() {
 
   useEffect(() => {
     if (isError) {
-      const { message, error: errReason } = (error as ErrorResponse).data;
-      toast.error(
-        <div>
-          {message}
-          <br />
-          {errReason}
-        </div>,
-        {
-          theme: "colored",
-        }
-      );
+      console.log(error);
+      if (Array.isArray((error as any).data.error)) {
+        (error as any).data.error.forEach((el: any) =>
+          toast.error(el.message, {
+            position: "top-right",
+          })
+        );
+      } else {
+        toast.error((error as any).data.message, {
+          position: "top-right",
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
@@ -49,22 +49,19 @@ export function RegistrationForm() {
       defaultValues={someDefaultValues}
     >
       <Form.Input<RegistrationFormSchemaType>
-        displayName="Email"
         placeholder="Email"
         name="email"
         type="email"
       />
-      <Form.Input<RegistrationFormSchemaType>
-        displayName="Password"
+
+      <Form.PasswordInput<RegistrationFormSchemaType>
         placeholder="Password"
         name="password"
-        type="password"
       />
-      <Form.Input<RegistrationFormSchemaType>
-        displayName="Confirm Password"
+
+      <Form.PasswordInput<RegistrationFormSchemaType>
         placeholder="Confirm Password"
         name="confirmPassword"
-        type="password"
       />
 
       <button type="submit">Register</button>
