@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { SubmitHandler } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Button } from "ui";
 import { Form } from "../../../../shared/ui/Form/Form";
 import { useLoginUserMutation } from "../../api/authApi";
 import { LoginFormSchema, LoginFormSchemaType } from "../../lib/validations";
@@ -55,13 +56,17 @@ export function LoginForm() {
         placeholder="Email"
         name="email"
         type="email"
+        onDark
       />
       <Form.PasswordInput<LoginFormSchemaType>
         placeholder="Password"
         name="password"
+        onDark
       />
 
-      <button type="submit">Login</button>
+      <Button type="submit" className="mt-8 mb-2" loading={isLoading}>
+        Login
+      </Button>
     </Form>
   );
 }

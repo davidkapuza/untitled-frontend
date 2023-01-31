@@ -7,6 +7,12 @@ module.exports = {
       fontFamily: {
         sans: ["Figtree", "sans-serif"],
       },
+      colors: {
+        black: "#1C1E20"
+      },
+      fontSize: {
+        xs: "0.625rem"
+      }
     },
   },
   plugins: [],

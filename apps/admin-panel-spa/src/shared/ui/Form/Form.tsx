@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { Input as StyledInput } from "ui";
@@ -17,11 +17,13 @@ export function Form<
   schema,
   onSubmit,
   children,
+  className = "",
   defaultValues,
 }: {
   schema: Schema;
   onSubmit: (data: DataSchema, event?: React.BaseSyntheticEvent) => void;
-  children: any;
+  children: React.ReactNode;
+  className?: string;
   defaultValues?: Record<string, any>;
 }) {
   const methods = useForm({
@@ -36,7 +38,10 @@ export function Form<
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit as GenericOnSubmit)}>
+      <form
+        className={`w-full ${className}`}
+        onSubmit={handleSubmit(onSubmit as GenericOnSubmit)}
+      >
         {children}
       </form>
     </FormProvider>
@@ -47,9 +52,11 @@ type FormInputType<T> = {
   name: keyof T;
   label?: string;
   type?: string;
+  className?: string;
+  onDark?: boolean;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-Form.Input = function Input<Model extends Record<string, any>>({
+function Input<Model extends Record<string, any>>({
   name,
   label,
   type,
@@ -63,24 +70,27 @@ Form.Input = function Input<Model extends Record<string, any>>({
   return (
     <>
       <StyledInput
+        {...props}
         type={type}
         name={name}
         label={label}
         register={register}
         disabled={isSubmitting}
-        {...props}
       />
-      {errors[name as string] && (
-        <span className="text-sm font-medium text-red-500 pt-2">
-          <Icons.AlertTriangle size={11} className="inline-block mr-1" />
-          <small>{errors[name as string]?.message}</small>
-        </span>
-      )}
+
+      <span
+        className={`${
+          errors[name] ? "visible" : " invisible"
+        } pt-2 text-sm font-medium text-red-500`}
+      >
+        <Icons.AlertTriangle size={11} className="inline-block mr-1" />
+        <small>{errors[name as string]?.message}</small>
+      </span>
     </>
   );
-};
+}
 
-Form.PasswordInput = function PasswordInput<Model extends Record<string, any>>({
+function PasswordInput<Model extends Record<string, any>>({
   name,
   label,
   ...props
@@ -96,7 +106,7 @@ Form.PasswordInput = function PasswordInput<Model extends Record<string, any>>({
     <>
       <div className="relative">
         <button
-          className="absolute right-3 top-1/2 -translate-y-1/2"
+          className="absolute -translate-y-1/2 right-3 top-1/2"
           onClick={() => toggleVisible(!visible)}
         >
           {visible ? <Icons.EyeOff size={14} /> : <Icons.Eye size={14} />}
@@ -111,12 +121,17 @@ Form.PasswordInput = function PasswordInput<Model extends Record<string, any>>({
         />
       </div>
 
-      {errors[name as string] && (
-        <span className="text-sm font-medium text-red-500 pt-2">
-          <Icons.AlertTriangle size={11} className="inline-block mr-1" />
-          <small>{errors[name as string]?.message}</small>
-        </span>
-      )}
+      <span
+        className={`${
+          errors[name] ? "visible" : " invisible"
+        } pt-2 text-sm font-medium text-red-500`}
+      >
+        <Icons.AlertTriangle size={11} className="inline-block mr-1" />
+        <small>{errors[name]?.message}</small>
+      </span>
     </>
   );
-};
+}
+
+Form.Input = memo(Input) as typeof Input;
+Form.PasswordInput = memo(PasswordInput) as typeof PasswordInput;

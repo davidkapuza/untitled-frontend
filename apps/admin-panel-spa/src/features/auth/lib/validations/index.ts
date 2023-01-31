@@ -21,14 +21,14 @@ export const RegistrationFormSchema = z
     password: z
       .string()
       .min(1, "Field is required")
-      .min(8, "Too short")
-      .max(32, "Too long")
       .regex(
         /^\S(.+)\S$/gm,
-        "Password must not contain Whitespaces in the end or beginning of the password"
+        "Password must not contain whitespaces in the end or beginning of the password"
       )
       .regex(/\d/gm, "Password must contain at least one Digit.")
-      .regex(/[A-Z]/gm, "Password must have at least one Uppercase Character."),
+      .regex(/[A-Z]/gm, "Password must have at least one Uppercase Character.")
+      .min(8, "Too short")
+      .max(32, "Too long"),
     confirmPassword: z.string().min(1, "Field is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {

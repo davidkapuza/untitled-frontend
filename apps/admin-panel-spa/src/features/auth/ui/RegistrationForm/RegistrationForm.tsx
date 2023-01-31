@@ -7,6 +7,7 @@ import {
   RegistrationFormSchemaType,
 } from "../../lib/validations";
 import { toast } from "react-toastify";
+import { Button } from "ui";
 
 export function RegistrationForm() {
   const [registerUser, { isLoading, isError, error, isSuccess }] =
@@ -52,19 +53,24 @@ export function RegistrationForm() {
         placeholder="Email"
         name="email"
         type="email"
+        onDark
       />
 
       <Form.PasswordInput<RegistrationFormSchemaType>
         placeholder="Password"
         name="password"
+        onDark
       />
 
       <Form.PasswordInput<RegistrationFormSchemaType>
         placeholder="Confirm Password"
         name="confirmPassword"
+        onDark
       />
 
-      <button type="submit">Register</button>
+      <Button type="submit" className="mt-8 mb-2" loading={isLoading}>
+        Register
+      </Button>
     </Form>
   );
 }
